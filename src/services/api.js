@@ -61,3 +61,6 @@ export async function setPhotoLike(photoId, liked) {
   const response = await api.patch(`/photos/${photoId}/like`, { liked });
   return normalizePhoto(response.data.data);
 }
+export async function deletePhoto(photoId) {
+  const response = await api.post(`/photos/${photoId}`);
+}

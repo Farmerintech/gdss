@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FiCopy, FiDownload, FiHeart, FiMaximize2 } from "react-icons/fi";
+import { FiCopy, FiDownload, FiHeart, FiMaximize2, FiTrash2 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { usePhotoStore } from "../context/photoStore.js";
 import { formatDate } from "../utils/date.js";
@@ -19,7 +19,15 @@ export default function PhotoCard({ photo, onPreview }) {
       toast.error("Download failed");
     }
   }
-
+async function handleDelete(event) {
+    event.stopPropagation();
+    try {
+      await downloadImage(photo.url, `${photo.uploaderName}-memory.jpg`);
+      toast.success("Download started");
+    } catch {
+      toast.error("Download failed");
+    }
+  }
   async function handleCopy(event) {
     event.stopPropagation();
     try {
@@ -59,6 +67,7 @@ export default function PhotoCard({ photo, onPreview }) {
             <p className="font-bold">{photo.uploaderName}</p>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{formatDate(photo.uploadedAt)}</p>
           </div>
+                      <div className="flex gap-2">
           <div className="flex items-center justify-between gap-2">
             <button
               type="button"
@@ -79,6 +88,15 @@ export default function PhotoCard({ photo, onPreview }) {
               <FiHeart className={liked ? "fill-current" : ""} aria-hidden="true" />
               {totalLikes}
             </button>
+             <button
+                type="button"
+                onClick={handleDownload}
+                className="focus-ring grid size-11 place-items-center rounded-2xl bg-ink-900 text-white transition hover:-translate-y-0.5 dark:bg-white dark:text-ink-900"
+                aria-label="Download image"
+              >
+                <FiTrash2 aria-hidden="true" />
+              </button>
+              </div>
             <div className="flex gap-2">
               <button
                 type="button"
