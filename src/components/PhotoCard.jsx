@@ -91,7 +91,7 @@ async function handleDelete(event) {
             </button>
              <button
                 type="button"
-                onClick={handleDelete}
+                onClick={handleDelete(photo.id)}
                 className="focus-ring grid size-11 place-items-center rounded-2xl bg-ink-900 text-white transition hover:-translate-y-0.5 dark:bg-white dark:text-ink-900"
                 aria-label="Download image"
               >
