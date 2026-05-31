@@ -21,7 +21,6 @@ export default function PhotoCard({ photo, onPreview }) {
     }
   }
 async function handleDelete(event) {
-    event.stopPropagation();
     try {
       await deletePhoto()
       toast.success("Deleted");
