@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { usePhotoStore } from "../context/photoStore.js";
 import { formatDate } from "../utils/date.js";
 import { copyImageLink, downloadImage } from "../utils/download.js";
+import { deletePhoto } from "../services/api.js";
 
 export default function PhotoCard({ photo, onPreview }) {
   const { likedPhotoIds, toggleLike } = usePhotoStore();
@@ -22,10 +23,10 @@ export default function PhotoCard({ photo, onPreview }) {
 async function handleDelete(event) {
     event.stopPropagation();
     try {
-      await downloadImage(photo.url, `${photo.uploaderName}-memory.jpg`);
-      toast.success("Download started");
+      await deletePhoto()
+      toast.success("Deleted");
     } catch {
-      toast.error("Download failed");
+      toast.error("Delete failed");
     }
   }
   async function handleCopy(event) {
@@ -90,7 +91,7 @@ async function handleDelete(event) {
             </button>
              <button
                 type="button"
-                onClick={handleDownload}
+                onClick={handleDelete}
                 className="focus-ring grid size-11 place-items-center rounded-2xl bg-ink-900 text-white transition hover:-translate-y-0.5 dark:bg-white dark:text-ink-900"
                 aria-label="Download image"
               >
