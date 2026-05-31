@@ -1,26 +1,75 @@
 import { create } from "zustand";
-import { fetchAttendees, saveAttendee } from "../services/api.js";
+
+import {
+  fetchAttendees,
+  saveAttendee,
+  updateAttendee,
+  deleteAttendee
+} from "../services/api.js";
 
 export const useAttendeeStore = create((set, get) => ({
   attendees: [],
   loading: false,
   error: "",
+
   loadAttendees: async (search = "") => {
-    set({ loading: true, error: "" });
+    set({
+      loading: true,
+      error: ""
+    });
+
     try {
       const attendees = await fetchAttendees(search);
-      set({ attendees, loading: false });
+
+      set({
+        attendees,
+        loading: false
+      });
     } catch (error) {
       set({
         loading: false,
-        error: error.response?.data?.message || "Could not load attendees"
+        error:
+          error.response?.data?.message ||
+          "Could not load attendees"
       });
     }
   },
-  addAttendee: async (payload) => {
+
+  createAttendee: async (payload) => {
     const attendee = await saveAttendee(payload);
-    const existing = get().attendees.filter((item) => item.id !== attendee.id);
-    set({ attendees: [...existing, attendee].sort((a, b) => a.fullName.localeCompare(b.fullName)) });
+
+    set((state) => ({
+      attendees: [...state.attendees, attendee].sort((a, b) =>
+        a.fullName.localeCompare(b.fullName)
+      )
+    }));
+
     return attendee;
+  },
+
+  updateAttendee: async (id, payload) => {
+    const attendee = await updateAttendee(id, payload);
+
+    set((state) => ({
+      attendees: state.attendees
+        .map((item) =>
+          item._id === id ? attendee : item
+        )
+        .sort((a, b) =>
+          a.fullName.localeCompare(b.fullName)
+        )
+    }));
+
+    return attendee;
+  },
+
+  deleteAttendee: async (id) => {
+    await deleteAttendee(id);
+
+    set((state) => ({
+      attendees: state.attendees.filter(
+        (item) => item._id !== id
+      )
+    }));
   }
 }));
