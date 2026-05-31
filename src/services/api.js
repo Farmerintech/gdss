@@ -38,12 +38,12 @@ export function normalizePhoto(photo) {
 }
 
 export async function fetchAttendees(search = "") {
-  const response = await api.get("/attendees", { params: search ? { search } : {} });
+  const response = await api.get("/attendees/", { params: search ? { search } : {} });
   return response.data.data.map(normalizeAttendee);
 }
 
 export async function saveAttendee(payload) {
-  const response = await api.post("/attendees", payload);
+  const response = await api.post("/attendees/", payload);
   return normalizeAttendee(response.data.data);
 }
 
