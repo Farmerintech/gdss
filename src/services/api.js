@@ -65,3 +65,10 @@ export async function deletePhoto(photoId) {
   const response = await api.delete(`/photos/${photoId}`);
     return normalizePhoto(response.data.data);
 }
+export async function deleteAttendee(id) {
+  const { data } = await api.delete(
+    `/attendees/${id}`
+  );
+
+  return data.data;
+}
