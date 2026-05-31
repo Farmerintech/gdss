@@ -37,7 +37,7 @@ export default function Navbar() {
   const ThemeIcon = theme === "dark" ? FiSun : FiMoon;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200/70 bg-white/80 backdrop-blur-2xl dark:border-white/10 dark:bg-gray-950/75">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200/70 bg-white/80 backdrop-blur-2xl dark:border-white/10 dark:bg-gray-950/75 z-100">
       <nav className="container-shell flex h-20 items-center justify-between">
         <NavLink to="/" className="focus-ring flex items-center gap-3 rounded-2xl" aria-label="Memories home">
           <span className="grid size-11 place-items-center rounded-2xl bg-ink-900 text-white shadow-soft dark:bg-white dark:text-ink-900">
@@ -77,7 +77,7 @@ export default function Navbar() {
           <>
             <motion.button
               type="button"
-              className="fixed inset-0 z-50 bg-ink-900/30 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-50 bg-ink-900/30 backdrop-blur-sm md:hidden z-100"
               aria-label="Close menu"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
