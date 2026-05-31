@@ -77,7 +77,7 @@ export default function Navbar() {
           <>
             <motion.button
               type="button"
-              className="fixed inset-0 z-50 bg-ink-900/30 backdrop-blur-sm md:hidden z-100"
+              className="fixed inset-0 z-50 bg-white-900/30 backdrop-blur-sm md:hidden z-100"
               aria-label="Close menu"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
