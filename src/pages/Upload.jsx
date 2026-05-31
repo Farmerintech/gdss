@@ -46,7 +46,8 @@ export default function Upload() {
         const savedPhoto = await addPhoto({
           publicId: result.publicId,
           imageUrl: result.url,
-          tags: ["uploaded"]
+          tags: ["uploaded"],
+          caption:"GDSS CLASS OF 2017 Get together"
         });
 
         uploaded.push(savedPhoto);
