@@ -1,7 +1,9 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://gdss-backend.onrender.com/api",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "https://gdss-backend.onrender.com/api",
   headers: {
     "Content-Type": "application/json"
   }
@@ -10,6 +12,7 @@ export const api = axios.create({
 function normalizeAttendee(attendee) {
   return {
     id: attendee._id || attendee.id,
+    _id: attendee._id || attendee.id,
     fullName: attendee.fullName,
     name: attendee.fullName,
     nickname: attendee.nickname || "",
@@ -24,11 +27,14 @@ function normalizeAttendee(attendee) {
 export function normalizePhoto(photo) {
   return {
     id: photo._id || photo.id,
+    _id: photo._id || photo.id,
     publicId: photo.publicId,
     url: photo.imageUrl,
     imageUrl: photo.imageUrl,
     uploaderName: photo.uploaderName,
-    attendee: photo.attendee ? normalizeAttendee(photo.attendee) : null,
+    attendee: photo.attendee
+      ? normalizeAttendee(photo.attendee)
+      : null,
     uploadedAt: photo.createdAt || photo.uploadedAt,
     createdAt: photo.createdAt,
     caption: photo.caption || "",
@@ -37,38 +43,78 @@ export function normalizePhoto(photo) {
   };
 }
 
+/* ==========================
+   ATTENDEES
+========================== */
+
 export async function fetchAttendees(search = "") {
-  const response = await api.get("/attendees/", { params: search ? { search } : {} });
+  const response = await api.get("/attendees", {
+    params: search ? { search } : {}
+  });
+
   return response.data.data.map(normalizeAttendee);
 }
 
 export async function saveAttendee(payload) {
-  const response = await api.post("/attendees/", payload);
+  const response = await api.post("/attendees", payload);
+
   return normalizeAttendee(response.data.data);
 }
 
+export async function updateAttendee(id, payload) {
+  const response = await api.put(
+    `/attendees/${id}`,
+    payload
+  );
+
+  return normalizeAttendee(response.data.data);
+}
+
+export async function deleteAttendee(id) {
+  const response = await api.delete(
+    `/attendees/${id}`
+  );
+
+  return response.data.data;
+}
+
+/* ==========================
+   PHOTOS
+========================== */
+
 export async function fetchPhotos(params = {}) {
-  const response = await api.get("/photos", { params });
+  const response = await api.get("/photos", {
+    params
+  });
+
   return response.data.data.map(normalizePhoto);
 }
 
 export async function savePhoto(payload) {
-  const response = await api.post("/photos", payload);
-  return normalizePhoto(response.data.data);
-}
-
-export async function setPhotoLike(photoId, liked) {
-  const response = await api.patch(`/photos/${photoId}/like`, { liked });
-  return normalizePhoto(response.data.data);
-}
-export async function deletePhoto(photoId) {
-  const response = await api.delete(`/photos/${photoId}`);
-    return normalizePhoto(response.data.data);
-}
-export async function deleteAttendee(id) {
-  const { data } = await api.delete(
-    `/attendees/${id}`
+  const response = await api.post(
+    "/photos",
+    payload
   );
 
-  return data.data;
+  return normalizePhoto(response.data.data);
+}
+
+export async function setPhotoLike(
+  photoId,
+  liked
+) {
+  const response = await api.patch(
+    `/photos/${photoId}/like`,
+    { liked }
+  );
+
+  return normalizePhoto(response.data.data);
+}
+
+export async function deletePhoto(photoId) {
+  const response = await api.delete(
+    `/photos/${photoId}`
+  );
+
+  return response.data.data;
 }
