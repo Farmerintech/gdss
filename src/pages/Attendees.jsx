@@ -91,7 +91,7 @@ export default function Attendees() {
     }
   }
 
-  async function handleDelete(attendee) {
+  async function handleDelete(id) {
     const confirmed = window.confirm(
       `Delete ${attendee.fullName}?`
     );
@@ -99,7 +99,7 @@ export default function Attendees() {
     if (!confirmed) return;
 
     try {
-      await deleteAttendee(attendee._id);
+      await deleteAttendee(id);
       toast.success("Attendee deleted");
 
       await loadAttendees(debouncedQuery);
@@ -167,14 +167,14 @@ export default function Attendees() {
 
                 <div className="absolute right-3 top-3 flex gap-2">
                   <button
-                    onClick={() => openEditModal(attendee)}
+                    onClick={() => openEditModal(attendee._id)}
                     className="rounded-lg bg-white p-2 shadow-md transition hover:scale-105 dark:bg-gray-800"
                   >
                     <FiEdit2 />
                   </button>
 
                   <button
-                    onClick={() => handleDelete(attendee)}
+                    onClick={() => handleDelete(attendee._id)}
                     className="rounded-lg bg-white p-2 text-red-500 shadow-md transition hover:scale-105 dark:bg-gray-800"
                   >
                     <FiTrash2 />
