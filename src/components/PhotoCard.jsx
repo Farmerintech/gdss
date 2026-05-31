@@ -68,8 +68,8 @@ async function handleDelete(event) {
             <p className="font-bold">{photo.uploaderName}</p>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{formatDate(photo.uploadedAt)}</p>
           </div>
-                      <div className="flex gap-2">
           <div className="flex items-center justify-between gap-2">
+                                  <div className="flex gap-2">
             <button
               type="button"
               onClick={async () => {
