@@ -22,7 +22,19 @@ export default function Home() {
   const { attendees, loadAttendees } = useAttendeeStore();
   const [preview, setPreview] = useState(null);
   const recentPhotos = photos.slice(0, 3);
-  const Today = new Date().getDay()
+const date = new Date();
+
+const options = {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+};
+
+const formattedDate = date.toLocaleDateString("en-US", options)
+  .replace(/,/g, "");
+
+// console.log(formattedDate);
   useEffect(() => {
     loadPhotos();
     loadAttendees();
@@ -40,7 +52,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-sm font-bold uppercase tracking-[0.24em] text-accent"
               >
-                {Today}
+                {formattedDate}
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 18 }}
