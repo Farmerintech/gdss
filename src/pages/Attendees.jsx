@@ -18,6 +18,7 @@ export default function Attendees() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingAttendee, setEditingAttendee] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -39,17 +40,25 @@ export default function Attendees() {
 
   useEffect(() => {
     loadAttendees(debouncedQuery);
-  }, [debouncedQuery, loadAttendees]);
+  }, [debouncedQuery]);
 
-  function openAddModal() {
-    setEditingAttendee(null);
-
+  function resetForm() {
     setFormData({
       fullName: "",
       nickname: "",
       profileImageUrl: ""
     });
 
+    setEditingAttendee(null);
+  }
+
+  function closeForm() {
+    setShowForm(false);
+    resetForm();
+  }
+
+  function openAddModal() {
+    resetForm();
     setShowForm(true);
   }
 
@@ -57,9 +66,9 @@ export default function Attendees() {
     setEditingAttendee(attendee);
 
     setFormData({
-      fullName: attendee.fullName || "",
-      nickname: attendee.nickname || "",
-      profileImageUrl: attendee.profileImageUrl || ""
+      fullName: attendee?.fullName || "",
+      nickname: attendee?.nickname || "",
+      profileImageUrl: attendee?.profileImageUrl || ""
     });
 
     setShowForm(true);
@@ -68,10 +77,14 @@ export default function Attendees() {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!formData.fullName.trim()) {
+    if (!formData.fullName?.trim()) {
       toast.error("Full name is required");
       return;
     }
+
+    if (submitting) return;
+
+    setSubmitting(true);
 
     try {
       if (editingAttendee) {
@@ -84,14 +97,15 @@ export default function Attendees() {
 
       await loadAttendees(debouncedQuery);
 
-      setShowForm(false);
-      setEditingAttendee(null);
+      closeForm();
     } catch (error) {
-      toast.error(error.message || "Operation failed");
+      toast.error(error?.message || "Operation failed");
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(attendee) {
     const confirmed = window.confirm(
       `Delete ${attendee.fullName}?`
     );
@@ -99,12 +113,17 @@ export default function Attendees() {
     if (!confirmed) return;
 
     try {
-      await deleteAttendee(id);
+      await deleteAttendee(attendee._id);
+
       toast.success("Attendee deleted");
 
       await loadAttendees(debouncedQuery);
+
+      if (selected?._id === attendee._id) {
+        setSelected(null);
+      }
     } catch (error) {
-      toast.error(error.message || "Delete failed");
+      toast.error(error?.message || "Delete failed");
     }
   }
 
@@ -167,15 +186,17 @@ export default function Attendees() {
 
                 <div className="absolute right-3 top-3 flex gap-2">
                   <button
-                    onClick={() => openEditModal(attendee._id)}
+                    onClick={() => openEditModal(attendee)}
                     className="rounded-lg bg-white p-2 shadow-md transition hover:scale-105 dark:bg-gray-800"
+                    aria-label={`Edit ${attendee.fullName}`}
                   >
                     <FiEdit2 />
                   </button>
 
                   <button
-                    onClick={() => handleDelete(attendee._id)}
+                    onClick={() => handleDelete(attendee)}
                     className="rounded-lg bg-white p-2 text-red-500 shadow-md transition hover:scale-105 dark:bg-gray-800"
+                    aria-label={`Delete ${attendee.fullName}`}
                   >
                     <FiTrash2 />
                   </button>
@@ -207,8 +228,9 @@ export default function Attendees() {
               </h2>
 
               <button
-                onClick={() => setShowForm(false)}
+                onClick={closeForm}
                 className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="Close form"
               >
                 <FiX />
               </button>
@@ -221,15 +243,16 @@ export default function Attendees() {
                 </label>
 
                 <input
+                  autoFocus
                   type="text"
                   value={formData.fullName}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       fullName: e.target.value
-                    })
+                    }))
                   }
-                  className="w-full rounded-xl border px-4 py-3 outline-none"
+                  className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
                   placeholder="John Doe"
                 />
               </div>
@@ -243,12 +266,12 @@ export default function Attendees() {
                   type="text"
                   value={formData.nickname}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       nickname: e.target.value
-                    })
+                    }))
                   }
-                  className="w-full rounded-xl border px-4 py-3 outline-none"
+                  className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
                   placeholder="Johnny"
                 />
               </div>
@@ -259,24 +282,27 @@ export default function Attendees() {
                 </label>
 
                 <input
-                  type="text"
+                  type="url"
                   value={formData.profileImageUrl}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       profileImageUrl: e.target.value
-                    })
+                    }))
                   }
-                  className="w-full rounded-xl border px-4 py-3 outline-none"
-                  placeholder="https://..."
+                  className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://example.com/avatar.jpg"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-xl bg-accent py-3 font-bold text-white"
+                disabled={submitting}
+                className="w-full rounded-xl bg-accent py-3 font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {editingAttendee
+                {submitting
+                  ? "Saving..."
+                  : editingAttendee
                   ? "Update Attendee"
                   : "Add Attendee"}
               </button>
