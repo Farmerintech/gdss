@@ -102,11 +102,15 @@ export default function Navbar() {
                   <FiX aria-hidden="true" />
                 </button>
               </div>
-              <div className="grid gap-2 bg-gray-200">
-                {links.map((link) => (
-                  <NavItem key={link.to} link={link} onClick={() => setOpen(false)} />
-                ))}
-              </div>
+              <div className="grid gap-2 rounded-2xl bg-gray-100 p-3 dark:bg-white/5">
+  {links.map((link) => (
+    <NavItem
+      key={link.to}
+      link={link}
+      onClick={() => setOpen(false)}
+    />
+  ))}
+</div>
             </motion.aside>
           </>
         )}
