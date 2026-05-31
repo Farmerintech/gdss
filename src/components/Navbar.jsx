@@ -43,7 +43,7 @@ export default function Navbar() {
           <span className="grid size-11 place-items-center rounded-2xl bg-ink-900 text-white shadow-soft dark:bg-white dark:text-ink-900">
             <FiCamera size={20} aria-hidden="true" />
           </span>
-          <span className="text-xl font-bold tracking-tight">Memories</span>
+          <span className="text-xl font-bold tracking-tight">GDSS'2017</span>
         </NavLink>
 
         <div className="hidden items-center gap-1 md:flex">

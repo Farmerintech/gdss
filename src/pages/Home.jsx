@@ -60,7 +60,7 @@ const formattedDate = date.toLocaleDateString("en-US", options)
                 transition={{ delay: 0.05 }}
                 className="mt-5 max-w-3xl text-5xl font-bold tracking-tight text-ink-900 dark:text-white sm:text-6xl lg:text-7xl"
               >
-                Memories
+                GDSS Adeta Alumni Association 2017
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 18 }}
